@@ -1,0 +1,37 @@
+!pip install opencv-python keras-resnet==4.5.1 
+!pip install keras==2.4.3
+!pip install tensorflow==2.4.0
+!pip install tensorflow-gpu==2.4.0
+!pip install imageai --upgrade
+!pip install --upgrade tensorflow
+
+
+from imageai.Detection.Custom import CustomVideoObjectDetection
+import os
+import cv2
+
+execution_path = os.getcwd()
+
+camera = cv2.VideoCapture(0)
+
+
+def forSeconds(second_number, output_arrays, count_arrays, average_output_count):
+    print("SECOND : ", second_number)
+    print("Array for the outputs of each frame ", output_arrays)
+    print("Array for output count for unique objects in each frame : ", count_arrays)
+    print("Output average count for unique objects in the last second: ", average_output_count)
+    print("------------END OF A SECOND --------------")
+
+
+detector = CustomVideoObjectDetection()
+detector.setModelTypeAsYOLOv3()
+detector.setModelPath(os.path.join(execution_path , "C:\\Users\\karta\\downloads\\bettermodels-20210919T223536Z-001\\bettermodels\\models\\detection_model-ex-011--loss-0011.562.h5"))
+detector.setJsonPath("C:\\Users\\karta\\Downloads\\bettermodels-20210919T223536Z-001\\bettermodels\\json\\detection_config.json")
+detector.loadModel()
+
+video_path = detector.detectObjectsFromVideo(camera_input=camera, 
+  input_file_path=os.path.join(execution_path, "C:\\Users\\karta\\Downloads\\livevideo_analysis.avi"), 
+    output_file_path=os.path.join(execution_path, "C:\\Users\\karta\\Downloads\\11.12") ,  
+      frames_per_second=24, per_second_function=forSeconds,  minimum_percentage_probability=30, detection_timeout=60)
+
+print(video_path)
